@@ -1,0 +1,19 @@
+# IntelliJ
+.idea/
+*.iml
+
+# Java build output
+**/target/
+
+# Frontend dependencies and build output
+**/node_modules/
+**/build/
+**/dist/
+
+# Local environment settings
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log

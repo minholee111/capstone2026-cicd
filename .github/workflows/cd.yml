@@ -1,0 +1,43 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 소스코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Docker Hub 로그인
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Backend Docker Build
+        env:
+          DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+        run: |
+          docker build \
+            -t "$DOCKER_USER/yj-backend:$GITHUB_SHA" \
+            -t "$DOCKER_USER/yj-backend:latest" ./backend
+
+      - name: Frontend Docker Build
+        env:
+          DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+        run: |
+          docker build \
+            -t "$DOCKER_USER/yj-frontend:$GITHUB_SHA" \
+            -t "$DOCKER_USER/yj-frontend:latest" ./frontend
+
+      - name: Docker Hub Push
+        env:
+          DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+        run: |
+          docker push "$DOCKER_USER/yj-backend:$GITHUB_SHA"
+          docker push "$DOCKER_USER/yj-backend:latest"
+          docker push "$DOCKER_USER/yj-frontend:$GITHUB_SHA"
+          docker push "$DOCKER_USER/yj-frontend:latest"

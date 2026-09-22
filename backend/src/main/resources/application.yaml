@@ -30,4 +30,4 @@ spring:
     activate:
       on-profile: docker
   datasource:
-    url: jdbc:mariadb://db:3316/user_db
+    url: jdbc:mariadb://db:3306/user_db
